@@ -29,7 +29,7 @@ class Codec(Lucene91Codec):
         Lucene91HnswVectorsFormat(self.M, self.efConstruction)
 
 
-class LucenePyLucene(BaseANN):
+class PyLuceneKNN(BaseANN):
     """
     KNN using the Lucene Vector datatype.
     """
