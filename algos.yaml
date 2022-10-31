@@ -49,21 +49,11 @@ float:
         base:
           args: [[400, 1024, 4096, 8192, 16384],
                  [1, 10, 40, 100, 200]]
-    luceneknn-test:
-      docker-tag: ann-benchmarks-luceneknn
-      module: ann_benchmarks.algorithms.luceneknn
-      constructor: LuceneBatch
-      base-args: ["@metric", "@dimension"]
-      run-groups:
-        M-4:
-          arg-groups:
-            - {"M": 4,  "efConstruction": 500}
-          query-args: [[10, 20, 40, 80, 120, 200, 400, 600, 800]]
 
     luceneknn:
       docker-tag: ann-benchmarks-luceneknn
       module: ann_benchmarks.algorithms.luceneknn
-      constructor: LuceneBatch
+      constructor: PyLuceneKNN
       base-args: ["@metric", "@dimension"]
       run-groups:
         M-4:
