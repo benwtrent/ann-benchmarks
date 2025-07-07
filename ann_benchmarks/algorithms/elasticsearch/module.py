@@ -54,11 +54,11 @@ class ElasticsearchKNN(BaseANN):
             "number_of_shards": 1,
             "number_of_replicas": 0,
             "refresh_interval": -1,
-            "_source": {
-                "enabled": False
-            }
         }
         mappings = {
+            "_source": {
+                "enabled": False
+            },
             "properties": {
                 "id": {"type": "int", "index": False, "store": True},
                 "vec": {
