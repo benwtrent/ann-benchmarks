@@ -60,7 +60,7 @@ class ElasticsearchKNN(BaseANN):
                 "enabled": False
             },
             "properties": {
-                "id": {"type": "int", "index": False, "store": True},
+                "id": {"type": "integer", "index": False, "store": True},
                 "vec": {
                     "type": "dense_vector",
                     "element_type": "float",
