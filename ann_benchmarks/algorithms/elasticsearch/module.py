@@ -68,7 +68,7 @@ class ElasticsearchKNN(BaseANN):
                     "index": True,
                     "similarity": self.similarity_metric,
                     "index_options": {
-                        "type": self.index_options.get("type", "hnsw"),
+                        "type": self.index_options.get("type", "int4_hnsw"),
                         "m": self.index_options["m"],
                         "ef_construction": self.index_options["ef_construction"],
                     },
