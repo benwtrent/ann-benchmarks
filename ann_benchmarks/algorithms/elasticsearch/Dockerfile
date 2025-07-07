@@ -1,5 +1,5 @@
 FROM ann-benchmarks AS builder
-ARG ELASTICSEARCH_VERSION=9.0.3
+ARG ELASTICSEARCH_VERSION=9.0.2
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get install -y curl
@@ -16,7 +16,7 @@ RUN tar -zxf /tmp/elasticsearch-${ELASTICSEARCH_VERSION}-linux-$(arch).tar.gz --
 #  - https://www.elastic.co/guide/en/elasticsearch/reference/current/targz.html
 #  - https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
 FROM ann-benchmarks
-ARG ELASTICSEARCH_VERSION=9.0.3
+ARG ELASTICSEARCH_VERSION=9.0.2
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get install -y curl
