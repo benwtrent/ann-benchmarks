@@ -60,6 +60,7 @@ class ElasticsearchKNN(BaseANN):
                 "enabled": False
             },
             "properties": {
+                "id": {"type": "integer", "index": False},
                 "vec": {
                     "type": "dense_vector",
                     "element_type": "float",
@@ -78,7 +79,7 @@ class ElasticsearchKNN(BaseANN):
 
         def gen():
             for i, vec in enumerate(X):
-                yield {"_op_type": "create", "_index": self.index_name, "_id": i, "_source": {"vec": vec.tolist()}}
+                yield {"_op_type": "create", "_index": self.index_name, "_source": {"vec": vec.tolist(), "id": i}}
 
         print("Indexing ...")
         (_, errors) = bulk(self.client, gen(), chunk_size=500, request_timeout=-1)
@@ -112,10 +113,11 @@ class ElasticsearchKNN(BaseANN):
             size=n,
             _source=False,
             stored_fields="_none_",
-            filter_path=["hits.hits._id"],
+            docvalue_fields=["id"],
+            filter_path=["hits.hits.fields.id"],
             request_timeout=-1,
         )
-        return [h["_id"] for h in res["hits"]["hits"]]
+        return [int(h["fields"]["id"][0]) for h in res["hits"]["hits"]]
 
     def batch_query(self, X, n):
         self.batch_res = [self.query(q, n) for q in X]
