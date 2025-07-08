@@ -113,7 +113,7 @@ class ElasticsearchKNN(BaseANN):
             _source=False,
             stored_fields="_none_",
             filter_path=["hits.hits._id"],
-            request_timeout=10,
+            request_timeout=-1,
         )
         return [h["_id"] for h in res["hits"]["hits"]]
 
