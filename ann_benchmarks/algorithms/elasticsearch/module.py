@@ -79,12 +79,14 @@ class ElasticsearchKNN(BaseANN):
 
         def gen():
             for i, vec in enumerate(X):
-                yield {"_op_type": "create", "_index": self.index_name, "_source": {"vec": vec.tolist(), "id": i}}
+                yield {"_op_type": "index", "_index": self.index_name, "_source": {"vec": vec.tolist(), "id": i}}
 
         print("Indexing ...")
-        (_, errors) = bulk(self.client, gen(), chunk_size=500, request_timeout=-1)
+        (r, errors) = bulk(self.client, gen(), chunk_size=500, request_timeout=-1)
         if len(errors) != 0:
             raise RuntimeError("Failed to index documents")
+        print(f"Indexed {len(X)} documents with {len(errors)} errors.")
+        print(f"{r}")
 
         print("Force merge index ...")
         self.client.indices.forcemerge(index=self.index_name, max_num_segments=1, request_timeout=-1)
@@ -117,7 +119,7 @@ class ElasticsearchKNN(BaseANN):
             filter_path=["hits.hits.fields.id"],
             request_timeout=-1,
         )
-        return [int(h["fields"]["id"][0]) for h in res["hits"]["hits"]]
+        return [h["fields"]["id"][0] for h in res["hits"]["hits"]]
 
     def batch_query(self, X, n):
         self.batch_res = [self.query(q, n) for q in X]
