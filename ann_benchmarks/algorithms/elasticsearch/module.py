@@ -78,18 +78,18 @@ class ElasticsearchKNN(BaseANN):
 
         def gen():
             for i, vec in enumerate(X):
-                yield {"_op_type": "index", "_index": self.index_name, "_id": i, "vec": vec.tolist()}
+                yield {"_op_type": "create", "_index": self.index_name, "_id": i, "_source": {"vec": vec.tolist()}}
 
         print("Indexing ...")
-        (_, errors) = bulk(self.client, gen(), chunk_size=500, request_timeout=90)
+        (_, errors) = bulk(self.client, gen(), chunk_size=500, request_timeout=-1)
         if len(errors) != 0:
             raise RuntimeError("Failed to index documents")
 
         print("Force merge index ...")
-        self.client.indices.forcemerge(index=self.index_name, max_num_segments=1, request_timeout=900)
+        self.client.indices.forcemerge(index=self.index_name, max_num_segments=1, request_timeout=-1)
 
         print("Refreshing index ...")
-        self.client.indices.refresh(index=self.index_name, request_timeout=900)
+        self.client.indices.refresh(index=self.index_name, request_timeout=-1)
 
     def set_query_arguments(self, num_candidates):
         self.num_candidates = num_candidates
