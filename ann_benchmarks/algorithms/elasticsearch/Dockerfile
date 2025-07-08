@@ -53,11 +53,10 @@ xpack.ml.enabled: false\n\
 RUN echo '\
 -Xms3G\n\
 -Xmx3G\n\
--XX:+UseG1GC\n\
 -XX:HeapDumpPath=data\n\
 -XX:ErrorFile=/usr/share/elasticsearch/logs/hs_err_pid%p.log\n\
 -Xlog:gc*,gc+age=trace,safepoint:file=/usr/share/elasticsearch/logs/gc.log:utctime,pid,tags:filecount=32,filesize=64m\n\
-' > config/jvm.options.d/additional.heap.options
+' > config/jvm.options.d/additional.jvm.options
 
 RUN chown -R elasticsearch:elasticsearch /usr/share/elasticsearch
 
