@@ -33,7 +33,6 @@ RUN echo "vm.max_map_count=262144" >> /etc/sysctl.conf
 
 # Backup original configurations for potential future reference.
 RUN cp config/elasticsearch.yml config/elasticsearch.yml.bak
-RUN cp config/jvm.options config/jvm.options.bak
 
 # Configure Elasticsearch for single-node, single-core.
 RUN echo '\
@@ -56,7 +55,7 @@ RUN echo '\
 -XX:HeapDumpPath=data\n\
 -XX:ErrorFile=/usr/share/elasticsearch/logs/hs_err_pid%p.log\n\
 -Xlog:gc*,gc+age=trace,safepoint:file=/usr/share/elasticsearch/logs/gc.log:utctime,pid,tags:filecount=32,filesize=64m\n\
-' > config/jvm.options
+' > config/jvm.options.d/additional.heap.options
 
 RUN chown -R elasticsearch:elasticsearch /usr/share/elasticsearch
 

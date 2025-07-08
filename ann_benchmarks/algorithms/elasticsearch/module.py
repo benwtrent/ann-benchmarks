@@ -60,7 +60,6 @@ class ElasticsearchKNN(BaseANN):
                 "enabled": False
             },
             "properties": {
-                "id": {"type": "integer", "index": False, "store": True},
                 "vec": {
                     "type": "dense_vector",
                     "element_type": "float",
@@ -79,7 +78,7 @@ class ElasticsearchKNN(BaseANN):
 
         def gen():
             for i, vec in enumerate(X):
-                yield {"_op_type": "index", "_index": self.index_name, "id": i, "vec": vec.tolist()}
+                yield {"_op_type": "index", "_index": self.index_name, "_id": i, "vec": vec.tolist()}
 
         print("Indexing ...")
         (_, errors) = bulk(self.client, gen(), chunk_size=500, request_timeout=90)
@@ -100,24 +99,23 @@ class ElasticsearchKNN(BaseANN):
             raise ValueError("n must be smaller than num_candidates")
 
         body = {
-            "knn": {
+            "query": {"knn": {
                 "field": "vec",
                 "query_vector": q.tolist(),
                 "k": n,
                 "num_candidates": self.num_candidates,
-            }
+            }}
         }
         res = self.client.search(
             index=self.index_name,
             body=body,
             size=n,
             _source=False,
-            docvalue_fields=["id"],
             stored_fields="_none_",
-            filter_path=["hits.hits.fields.id"],
+            filter_path=["hits.hits._id"],
             request_timeout=10,
         )
-        return [h["fields"]["id"][0] for h in res["hits"]["hits"]]
+        return [h["_id"] for h in res["hits"]["hits"]]
 
     def batch_query(self, X, n):
         self.batch_res = [self.query(q, n) for q in X]
